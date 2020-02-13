@@ -2,6 +2,7 @@ import { Component, OnInit ,ViewChild, ElementRef} from '@angular/core';
 import { PersonaInterface } from 'src/app/modelo/persona';
 import { PersonaserService } from 'src/app/servicios/personaser.service';
 import { NgForm, FormGroup, FormControl, FormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { error } from 'protractor';
 
 
 @Component({
@@ -20,6 +21,10 @@ export class TablaComponent implements OnInit {
   personaVacia: PersonaInterface ={id:null};
 
   indice:number;
+
+  flag:boolean;
+
+  public mensajeError;
 
   constructor(private service:PersonaserService, private fb : FormBuilder) { 
       this.formBuilder();
@@ -40,8 +45,13 @@ export class TablaComponent implements OnInit {
   }
 
   getAll(){
-    this.service.getAll().subscribe((data)=>{
+    this.service.getAll().subscribe(
+      (data)=>{
       this.personas = data;
+    },
+    (error)=> {
+      this.mensajeError = error;
+      console.log(this.mensajeError);
     });
   }
 
@@ -49,6 +59,10 @@ export class TablaComponent implements OnInit {
     this.service.delete(persona.id).subscribe( data =>{
       alert('Registro eliminado');
       this.personas.splice( this.personas.indexOf(persona) ,1);
+    },
+    (error)=>{
+      this.mensajeError = error;
+      console.log(this.mensajeError);
     });
   }
 
@@ -59,13 +73,26 @@ export class TablaComponent implements OnInit {
         console.log(values);
         this.personas.push(data);      
         this.btnClose.nativeElement.click();
+        },
+        (error)=>{
+          this.mensajeError = error;
+          console.log(this.mensajeError);
         });
-    }else{
+    }else{     
       this.service.put(values.id,values).subscribe( (data) =>{
         console.log(data)
         this.btnClose.nativeElement.click();
+        this.flag = true;
+      },
+      (error)=>{
+        this.mensajeError = error;
+        console.log(this.mensajeError);
+        this.flag = false;
       });
-      this.personas.splice(this.indice,1,values);
+      
+      if(this.flag != false){
+        this.personas.splice(this.indice,1,values);
+      }
       this.indice = null;    
     }
     
