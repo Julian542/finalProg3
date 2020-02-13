@@ -1,0 +1,62 @@
+<div>
+    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalPerson" (click)="resetForm()">Añadir Registro</button>
+</div>
+<div>
+    <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">DNI</th>
+            <th scope="col">Accion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let persona of personas">
+            <th scope="row">{{persona.id}}</th>
+            <td>{{persona.nombre}}</td>
+            <td>{{persona.apellido}}</td>
+            <td>{{persona.dni}}</td>
+            <td>
+                <button type="btn-button" class="btn btn-success" (click)="personaSeleccionada(persona)" data-toggle="modal" data-target="#modalPerson">Actualizar</button>
+                <button type="btn-button" class="btn btn-danger" (click)="delete(persona)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<div class="modal fade" id="modalPerson" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+           Añadir/Modificar Registro
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="peopleForm" (ngSubmit)="saveRegistro(peopleForm.value)">
+          <div class="form-group">
+            <label for="nombre" aria-placeholder="Nombre...">Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre..." formControlName="nombre"/>
+          </div>
+          <div class="form-group">
+            <label for="apellido" >Apellido</label>
+            <input type="text" class="form-control" placeholder="Apellido..." formControlName="apellido">
+          </div>                    
+          <div class="form-group">
+            <label for="dni" class="col-form-label">DNI:</label>
+            <input type="text" class="form-control" placeholder="Documento nacional de Identidad" formControlName="dni">
+          </div>
+          <div class="modal-footer"> 
+            <button type="button" class="btn btn-secondary" #btnClose data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary float-right" #btnClose [disabled]="peopleForm.invalid" >Guardar Registro</button>
+          </div> 
+        </form>
+      </div>      
+    </div>
+  </div>
+</div>
